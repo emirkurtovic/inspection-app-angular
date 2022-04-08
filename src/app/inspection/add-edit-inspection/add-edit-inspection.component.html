@@ -1,0 +1,30 @@
+<form>
+    <div class="mb-3">
+        <!--Inspection Type-->
+        <label for="inspectionTypeId" class="form-label">Inspection Type</label>
+        <input class="form-control" type="text" *ngIf="childComponentAdd===false" disabled value="{{SelectedInspection.inspectionType}}">
+        <select class="form-control" name="inspectionTypeId" id="inspectionTypeId" *ngIf="childComponentAdd===true" [(ngModel)]="inspectionTypeId">
+            <option *ngFor="let item of InspectionTypesList" value="{{item.id}}">{{item.name}}</option>
+        </select>
+        <!--Inspection Status-->
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-control" name="status" id="status" [(ngModel)]="status">
+                <option value="UNSAT">UNSAT</option>
+                <option value="SAT">SAT</option>
+            </select>
+        </div>
+        <!--Inspection Comment-->
+        <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <input type="text" class="form-control" [(ngModel)]="comment" name="comment" id="comment">
+        </div>
+        <!--Buttons-->
+        <button (click)="addInspection()" *ngIf="childComponentAdd===true" class="btn btn-primary">
+            Add
+        </button>
+        <button (click)="updateInspection()" *ngIf="childComponentAdd===false" class="btn btn-primary">
+            Update
+        </button>
+    </div>
+</form>
