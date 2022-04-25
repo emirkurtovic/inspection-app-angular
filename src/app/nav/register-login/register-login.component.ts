@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter} from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { forkJoin, map, Observable, Subscription } from 'rxjs';
 
 import { AccountApiService } from 'src/app/shared/account-api.service';
@@ -18,7 +19,7 @@ export class RegisterLoginComponent implements OnInit {
   username:string="";
   password:string="";
 
-  constructor(private service: AccountApiService) { }
+  constructor(private service: AccountApiService, private toastService: ToastrService) { }
 
   ngOnInit(): void {
   }
@@ -36,30 +37,43 @@ export class RegisterLoginComponent implements OnInit {
       username:this.username,
       password:this.password
     }
-    this.sub=this.service.Login(user).subscribe(res=>{
-      //zatvaranje modula - ovaj put preko komunikacije child sa parent
-      this.openedEvent.emit(false);
-      //neke akcije
+    this.sub=this.service.Login(user).subscribe({
+      next: (res)=>{
+        //zatvaranje modula - ovaj put preko komunikacije child sa parent
+        this.openedEvent.emit(false);
+        //neke akcije
+      },
+      error: (err)=>{
+        this.toastService.error(err.error);
+      }
     });
   }
+  
   registerUser(){
     var user={
       username:this.username,
       password:this.password
     }
-    this.sub2=this.service.Register(user).subscribe(res=>{
-      //zatvaranje modula - ovaj put preko komunikacije child sa parent
-      this.openedEvent.emit(false);
-      //success alert- i ovo mozemo kasnije preko komunikacije sa parent?
-      var showAddSuccess=document.getElementById('register-success-alert');
-      if(showAddSuccess){
-        showAddSuccess.style.display="block";
-      }
-      setTimeout(function(){
+    this.sub2=this.service.Register(user).subscribe({
+      next: (res)=>{
+        //zatvaranje modula - ovaj put preko komunikacije child sa parent
+        this.openedEvent.emit(false);
+        //success alert- i ovo mozemo kasnije preko komunikacije sa parent?
+        var showAddSuccess=document.getElementById('register-success-alert');
         if(showAddSuccess){
-          showAddSuccess.style.display="none";
+          showAddSuccess.style.display="block";
         }
-      },4000);
+        setTimeout(function(){
+          if(showAddSuccess){
+            showAddSuccess.style.display="none";
+          }
+        },4000);
+      },
+      error: (err)=>{
+        this.toastService.error(err.error);
+      }
     });
   }
+  
+
 }
