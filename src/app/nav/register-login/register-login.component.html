@@ -1,0 +1,31 @@
+<form>
+    <div class="mb-3">
+        <!--User name-->
+        <div class="mb-3">
+            <label for="username" class="form-label">Name</label>
+            <input type="text" class="form-control" name="username" id="username" [(ngModel)]="username"
+            required minlength="4" maxlength="20" pattern="^[a-zA-Z0-9]+$" #usernameV="ngModel">
+            <div *ngIf="usernameV.invalid && (usernameV.dirty || usernameV.touched)" class="alert"> 
+                Username must contain between 4 and 20 characters (letters and numbers).
+            </div>
+        </div>
+        <!--User password-->
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" name="password" id="password" [(ngModel)]="password"
+             required minlength="4" maxlength="25" pattern="^[a-zA-Z0-9%~!@#=&_:;,`\$\^\*\+\|]+$" #passwordV="ngModel">
+             <div *ngIf="passwordV.invalid && (passwordV.dirty || passwordV.touched)" class="alert"> 
+                Password must contain between 4 and 25 characters (letters, numbers and special 
+                characters: %~!@#=&_:;,`$^*+|).
+            </div>
+        </div>
+        <!--Buttons-->
+        <button [disabled]="usernameV.invalid || passwordV.invalid" class="btn btn-outline-primary" (click)="loginUser()" *ngIf="childComponentLogin===true"> 
+            Login
+        </button>
+        <button [disabled]="usernameV.invalid || passwordV.invalid" class="btn btn-outline-primary" (click)="registerUser()" *ngIf="childComponentLogin===false"> 
+            Register
+        </button>
+    </div>
+</form>
+

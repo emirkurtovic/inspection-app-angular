@@ -1,27 +1,32 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { InspectionComponent } from './inspection/inspection.component';
-import { ShowInspectionComponent } from './inspection/show-inspection/show-inspection.component';
-import { AddEditInspectionComponent } from './inspection/add-edit-inspection/add-edit-inspection.component';
-import { InspectionApiService } from './shared/inspection-api.service';
+import { HomeComponent } from './home/home.component';
+import { AddEditInspectionComponent } from './home/add-edit-inspection/add-edit-inspection.component';
 import { FormsModule } from '@angular/forms';
+import { NavComponent } from './nav/nav.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { RegisterLoginComponent } from './nav/register-login/register-login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    InspectionComponent,
-    ShowInspectionComponent,
-    AddEditInspectionComponent
+    HomeComponent,
+    AddEditInspectionComponent,
+    NavComponent,
+    EditProfileComponent,
+    RegisterLoginComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    AppRoutingModule
   ],
-  providers: [InspectionApiService],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

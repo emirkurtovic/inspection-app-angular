@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin, map, Observable, Subscription } from 'rxjs';
+import { combineLatest, forkJoin, map, Observable, Subscription } from 'rxjs';
+import { User } from 'src/app/models/user';
+import { AccountApiService } from 'src/app/shared/account-api.service';
 import { InspectionApiService } from 'src/app/shared/inspection-api.service';
 
 @Component({
-  selector: 'app-show-inspection',
-  templateUrl: './show-inspection.component.html',
-  styleUrls: ['./show-inspection.component.css']
+  selector: 'app-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['./home.component.css']
 })
-export class ShowInspectionComponent implements OnInit {
+export class HomeComponent implements OnInit {
 
   //InspectionList$!:Observable<any[]>;
   //InspectionTypesList$!:Observable<any[]>;
@@ -15,15 +17,20 @@ export class ShowInspectionComponent implements OnInit {
   InspectionsList!:any[];
   InspectionTypesList!:any[];
   sub!: Subscription;
+  sub2!: Subscription;
   childComponentOpen:boolean=false;
   childComponentAdd:boolean=true;
   //SelectedInspection:any;
   SelectedInspection:any;
   ModalTitle:string="";
 
-  constructor(private service: InspectionApiService) { }
+  loggedIn!:boolean;
+  user:User|null=null;
+
+  constructor(private service: InspectionApiService, private accountService:AccountApiService) { }
 
   ngOnInit(): void {
+    /*
     //this.InspectionList$=this.service.getInspectionList();--sa async pipe
     //sa subscribe
     this.sub=forkJoin([this.service.getInspectionList(),this.service.getInspectionTypesList()]).subscribe(data=>{
@@ -32,7 +39,27 @@ export class ShowInspectionComponent implements OnInit {
       }
       this.InspectionsList=data[0];
       this.InspectionTypesList=data[1];
+      //user
+      console.log("asad");
+      //this.loggedIn=!!data[2];
+      //if(data[2]) this.user=data[2];
+      console.log("asad");
     });
+    */
+    this.sub=combineLatest([this.service.getInspectionList(),this.service.getInspectionTypesList(),this.accountService.currentUser$]).subscribe(data=>{
+      /*
+      for(let i=0;i<data[0].length;i++){
+        data[0][i].inspectionType=data[1].find(el=>el.id===data[0][i].inspectionTypeId).name;
+      }
+      */
+      this.InspectionsList=data[0];
+      this.InspectionTypesList=data[1];
+      //user
+      this.loggedIn=!!data[2];
+      this.user=data[2];
+      //console.log(this.user);
+    });
+
   }
   ngOnDestroy() {
     this.sub.unsubscribe();
@@ -53,12 +80,18 @@ export class ShowInspectionComponent implements OnInit {
   closeModal(){
     this.childComponentOpen=false;
     this.sub.unsubscribe();
-    this.sub=forkJoin([this.service.getInspectionList(),this.service.getInspectionTypesList()]).subscribe(data=>{
+    this.sub=combineLatest([this.service.getInspectionList(),this.service.getInspectionTypesList(),this.accountService.currentUser$]).subscribe(data=>{
+      /*
       for(let i=0;i<data[0].length;i++){
         data[0][i].inspectionType=data[1].find(el=>el.id===data[0][i].inspectionTypeId).name;
       }
+      */
       this.InspectionsList=data[0];
       this.InspectionTypesList=data[1];
+      //user
+      this.loggedIn=!!data[2];
+      this.user=data[2];
+      //console.log(this.user);
     });
   }
   deleteInspection(id:number){
@@ -78,5 +111,13 @@ export class ShowInspectionComponent implements OnInit {
         },4000);
       });
     }
+  }
+
+  getCurrentUser(){
+    this.sub2=this.accountService.currentUser$.subscribe(res=>{
+      this.loggedIn=!!res;
+      if(res) this.user=res;
+      //console.log(res);
+    });
   }
 }

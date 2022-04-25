@@ -1,6 +1,8 @@
 import { Component, OnInit, Input} from '@angular/core';
 import { InspectionApiService } from 'src/app/shared/inspection-api.service';
 import { Observable, Subscription } from 'rxjs';
+import { AccountApiService } from 'src/app/shared/account-api.service';
+import { User } from 'src/app/models/user';
 
 @Component({
   selector: 'app-add-edit-inspection',
@@ -20,29 +22,37 @@ export class AddEditInspectionComponent implements OnInit {
   comment:string="";
   inspectionType:string="";
 
+  userId:number=0;
+  
   sub!: Subscription;
+  sub2!:Subscription;
 
-  constructor(private service:InspectionApiService) { }
+  constructor(private service:InspectionApiService,private accountService:AccountApiService) { }
 
   ngOnInit(): void {
     if(this.childComponentAdd===false){
-      this.id=this.SelectedInspection.id;
-      this.inspectionTypeId=this.SelectedInspection.inspectionTypeId;
-      this.status=this.SelectedInspection.status;
-      this.comment=this.SelectedInspection.comment;
+      this.id=this.SelectedInspection.inspection.id;
+      this.inspectionTypeId=this.SelectedInspection.inspection.inspectionTypeId;
+      this.status=this.SelectedInspection.inspection.status;
+      this.comment=this.SelectedInspection.inspection.comment;
       this.inspectionType=this.SelectedInspection.inspectionType;
     }
+    this.sub2=this.accountService.currentUser$.subscribe(res=>{if(res) this.userId=res.id;});
   }
   ngOnDestroy() {
     if(this.sub){
       this.sub.unsubscribe();
+    }
+    if(this.sub2){
+      this.sub2.unsubscribe();
     }
   }
   addInspection(){
     var inspection={
       status:this.status,
       comment:this.comment,
-      inspectionTypeId:this.inspectionTypeId
+      inspectionTypeId:this.inspectionTypeId,
+      userId:this.userId
     };
     //console.log(inspection);
     this.sub=this.service.addInspection(inspection).subscribe(res=>{
@@ -68,7 +78,8 @@ export class AddEditInspectionComponent implements OnInit {
       id:this.id,
       status:this.status,
       comment:this.comment,
-      inspectionTypeId:this.inspectionTypeId
+      inspectionTypeId:this.inspectionTypeId,
+      userId:this.userId
     };
     //console.log(inspection);
     this.sub=this.service.updateInspection(Number(this.id),inspection).subscribe(res=>{

@@ -1,0 +1,25 @@
+<form>
+    <div class="mb-3" style="width: 300px;">
+        <!--User name-->
+        <div class="mb-3">
+            <label for="username" class="form-label">Name</label>
+            <input type="text" class="form-control" name="username" id="username2" disabled value="{{username}}">
+        </div>
+        <!--User about-->
+        <div class="mb-3">
+            <label for="about" class="form-label">About</label>
+            <textarea [(ngModel)]="about" class="form-control" name="about" id="about" rows="3" style="resize: none;" disabled *ngIf="LoggedUser && ViewUser && LoggedUser.username!=ViewUser.username"></textarea>
+            <textarea [(ngModel)]="about" maxlength="300" class="form-control" name="about" id="about" rows="3" style="resize: none;" *ngIf="LoggedUser && ViewUser && LoggedUser.username===ViewUser.username"></textarea>
+        </div>
+        <!--Buttons-->
+        <button (click)="updateUser()" class="btn btn-outline-primary" *ngIf="LoggedUser && ViewUser && LoggedUser.username===ViewUser.username"> 
+            Update
+        </button>
+    </div>
+</form>
+
+<div id="update-success-alert3" class="alert alert-primary" role="alert">
+    User Updated Successfully!
+</div>
+
+

@@ -1,13 +1,14 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InspectionApiService {
 
-  readonly inspectionAPIUrl = "https://localhost:7133/api";
+  readonly inspectionAPIUrl = environment.inspectionAPIUrl;
   constructor(private http: HttpClient) { }
 
   //Inspection
@@ -16,26 +17,28 @@ export class InspectionApiService {
     return this.http.get<any>(this.inspectionAPIUrl+'/inspections');
   }
   addInspection(data:any){
-    return this.http.post(this.inspectionAPIUrl+'/inspections',data);
+    return this.http.post(this.inspectionAPIUrl+'/inspections',data,{headers: new HttpHeaders({Authorization: 'Bearer '+JSON.parse(String(localStorage.getItem('user'))).token})});
   }
   updateInspection(id:number, data:any){
-    return this.http.put(this.inspectionAPIUrl+'/inspections/'+id,data);
+    return this.http.put(this.inspectionAPIUrl+'/inspections/'+id,data,{headers: new HttpHeaders({Authorization: 'Bearer '+JSON.parse(String(localStorage.getItem('user'))).token})});
   }
   deleteInspection(id:number){
-    return this.http.delete(this.inspectionAPIUrl+'/inspections/'+id);
+    return this.http.delete(this.inspectionAPIUrl+'/inspections/'+id,{headers: new HttpHeaders({Authorization: 'Bearer '+JSON.parse(String(localStorage.getItem('user'))).token})});
   }
 
   //Inspection Type
   getInspectionTypesList():Observable<any[]>{
     return this.http.get<any>(this.inspectionAPIUrl+'/inspectionTypes');
   }
-  addInspectionType(data:any){
-    return this.http.post(this.inspectionAPIUrl+'/inspectionTypes',data);
+
+  //Users
+  getUsersList():Observable<any[]>{
+    return this.http.get<any>(this.inspectionAPIUrl+'/users',{headers: new HttpHeaders({Authorization: 'Bearer '+JSON.parse(String(localStorage.getItem('user'))).token})});
   }
-  updateInspectionType(id:number, data:any){
-    return this.http.put(this.inspectionAPIUrl+'/inspectionTypes/'+id,data);
+  getUser(username:string):Observable<any>{
+    return this.http.get<any>(this.inspectionAPIUrl+'/users/'+username,{headers: new HttpHeaders({Authorization: 'Bearer '+JSON.parse(String(localStorage.getItem('user'))).token})});
   }
-  deleteInspectionType(id:number){
-    return this.http.delete(this.inspectionAPIUrl+'/inspectionTypes/'+id);
+  updateUser(username:string, data:any){
+    return this.http.put(this.inspectionAPIUrl+'/users/'+username,data,{headers: new HttpHeaders({Authorization: 'Bearer '+JSON.parse(String(localStorage.getItem('user'))).token})});
   }
 }

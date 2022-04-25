@@ -1,4 +1,4 @@
-#add-success-alert,#update-success-alert,#delete-success-alert{
+#update-success-alert2{
     display: none;
     animation: fadeInAndOut 4s;
 }
